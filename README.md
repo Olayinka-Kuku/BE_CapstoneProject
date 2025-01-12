@@ -1,100 +1,157 @@
 # Task Management API
 
-A Django-based API for managing tasks, projects, and comments. This project is part of the Backend Capstone Project.
+This project is a RESTful API built with Django REST Framework (DRF) for managing tasks. It provides endpoints for creating, retrieving, updating, deleting, and completing tasks, as well as filtering and sorting options. This API is designed to be used by front-end applications or other services that need to interact with task data.
 
-## Setup Instructions
+## Table of Contents
 
-1. Clone the repository:
-   bash
-   git clone https://github.com/yourusername/TaskManagementAPI.git
+- [Project Description](#project-description)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Authentication](#authentication)
+  - [Endpoints](#endpoints)
+    - [Users](#users)
+    - [Tasks](#tasks)
+  - [Filtering and Sorting](#filtering-and-sorting)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
+## Project Description
 
-## Prerequisites
-Before running this project, ensure you have the following installed:
+This API aims to provide a robust and flexible solution for managing tasks. It allows users to create tasks with titles, descriptions, due dates, priorities, and statuses. The API also supports user authentication, ensuring that users can only access and manage their own tasks.
 
-Python 3.10 or higher
-pip (Python package manager)
-Git
-Virtual environment tool (e.g., venv)
+## Features
 
-## Setup Instructions
-Follow these steps to set up and run the project:
+-   User authentication (using Token Authentication)
+-   CRUD (Create, Read, Update, Delete) operations for tasks
+-   Marking tasks as complete/incomplete
+-   Filtering tasks by status
+-   Sorting tasks by due date
+-   Detailed error handling
+-   Clear API documentation (using this README)
 
-1. Clone the Repository
-bash
-git clone https://github.com/Olayinka-Kuku/BE_CapstoneProject.git
-cd BE_CapstoneProject
+## Technologies Used
 
-2. Set Up the Virtual Environment
-bash
-python -m venv myenv
-source myenv/Scripts/activate   # For Windows (Git Bash or VSCode Terminal)
+-   Python
+-   Django
+-   Django REST Framework (DRF)
+-   SQLite (development) / PostgreSQL (production)
+-   Git (version control)
 
-3. Install Dependencies
-bash
-pip install -r requirements.txt
+## Installation & Setup Instructions
 
+**Prerequisites:**
 
+-   Python 3.8+
+-   pip
 
+**Steps:**
 
+1.  Clone the repository:
 
-4. Create a .env File
-Add your environment variables (e.g., secret key, database configuration) to a .env file. Example:
+    ```bash
+    git clone [invalid URL removed]
+    ```
 
-plaintext
-Copy code
-SECRET_KEY=your-secret-key
-DEBUG=True
-DATABASE_URL=sqlite:///db.sqlite3
-5. Run Migrations
-bash
-Copy code
-python manage.py makemigrations
-python manage.py migrate
-6. Run the Development Server
-bash
-Copy code
-python manage.py runserver
-Visit http://127.0.0.1:8000 in your browser.
+2.  Navigate to the project directory:
 
-Usage
-Use an API testing tool like Postman or cURL to test API endpoints.
-Authentication is required for most operations (login, register, etc.).
-API Endpoints
-Endpoint	Method	Description
-/api/register/	POST	Register a new user
-/api/login/	POST	Login and obtain a token
-/api/projects/	GET	List all projects
-/api/projects/	POST	Create a new project
-/api/projects/{id}/tasks/	GET	List all tasks for a project
-/api/tasks/{id}/comments/	GET	List all comments for a task
-Built With
-Django: Web framework
-Django REST Framework (DRF): API development
-SQLite: Default database for development
-Python: Programming language
- Features
+    ```bash
+    cd YOUR_REPO_NAME
+    ```
 
-- User authentication and authorization.
-- Create and manage projects.
-- Add tasks to projects with due dates and statuses (e.g., Pending, Completed).
-- Add comments to tasks.
-- RESTful API built with Django and Django REST Framework.
+3.  Create a virtual environment (recommended):
 
----
+    ```bash
+    python -m venv venv  # On Windows
+    python3 -m venv venv # On Linux/macOS
+    source venv/bin/activate # On Linux/macOS
+    venv\Scripts\activate # On Windows
+    ```
 
-## Project Structure
+4.  Install the project dependencies:
 
-BE_CapstoneProject/
-│
-├── task_management_api/   # Main Django project directory
-│   ├── settings.py        # Project settings
-│   ├── urls.py            # Main URL configurations
-│   ├── wsgi.py            # WSGI configuration for deployment
-│
-├── myenv/                 # Virtual environment 
-├── requirements.txt       # Python dependencies
-├── manage.py              # Django management script
-├── README.md              # Project documentation
-├── .gitignore             # Git ignore rules
-└── ...
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5.  Apply database migrations:
+
+    ```bash
+    python manage.py migrate
+    ```
+
+6.  Create a superuser (for admin access):
+
+    ```bash
+    python manage.py createsuperuser
+    ```
+
+## Usage
+
+### Authentication
+
+This API uses Token Authentication. To access protected endpoints, you need to obtain a token by registering a user and then logging in.
+
+1.  **Register a User (POST /api/users/):**
+
+    ```json
+    {
+        "username": "testuser",
+        "password": "TestPassword123!",
+        "email": "test@example.com",
+        "first_name": "Test",
+        "last_name": "User"
+    }
+    ```
+
+2.  **Retrieve a Token (POST /api/token/):**
+
+    ```json
+    {
+        "username": "testuser",
+        "password": "TestPassword123!"
+    }
+    ```
+
+    The response will contain a token:
+
+    ```json
+    {
+        "token": "YOUR_GENERATED_TOKEN"
+    }
+    ```
+
+Include this token in the `Authorization` header of subsequent requests: `Authorization: Token YOUR_GENERATED_TOKEN`
+
+### Endpoints
+
+Base URL: `http://127.0.0.1:8000/api/` (for local development)
+
+#### Users
+
+-   **POST /api/users/**: Create a new user (registration).
+
+#### Tasks
+
+-   **GET /api/tasks/**: List all tasks for the authenticated user.
+-   **POST /api/tasks/**: Create a new task.
+-   **GET /api/tasks/{id}/**: Retrieve a specific task by ID.
+-   **PATCH /api/tasks/{id}/**: Update a specific task.
+-   **DELETE /api/tasks/{id}/**: Delete a specific task.
+-   **PATCH /api/tasks/{id}/complete/**: Mark a task as complete/incomplete.
+
+### Filtering and Sorting
+
+-   **Filtering by Status:** `GET /api/tasks/?status=pending` (or `completed`, `in_progress`, etc.)
+-   **Sorting by Due Date:** `GET /api/tasks/?ordering=due_date` (ascending) or `GET /api/tasks/?ordering=-due_date` (descending)
+
+## Testing
+
+To run the tests:
+
+```bash
+python manage.py test
